@@ -6,6 +6,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const flightsRouter = require('./routes/flights');
+const destinationsRouter = require('./routes/destinations');
 
 // Connecting the database here
 require('./config/database')
