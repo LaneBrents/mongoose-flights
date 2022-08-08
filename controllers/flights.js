@@ -1,4 +1,5 @@
 const Flight = require('../models/flight')
+const Ticket = require('../models/tickets');
 
 module.exports = {
     new: newFlight,
@@ -8,9 +9,8 @@ module.exports = {
 }
 
 function show(req, res) {
-    Flight.findById(req.params.id, function(err, flightDocument) {
-        console.log(flightDocument, " <- show page")
-        res.render('flights/show', {title: "Flight Detail", flight: flightDocument});
+    Flight.findById(req.params.id, function(err, allOfTheFlightsInTheDatabase) {
+    res.render('flights/show', {title: 'Flight Details', flight: allOfTheFlightsInTheDatabase});
     });
 }
 
@@ -32,23 +32,11 @@ function newFlight(req, res){
     res.render('flights/new.ejs')
 }
 
-function create(req, res){
-	console.log(req.body)
-
-	req.body.nowFlying = !!req.body.nowFlying; // forces the value to a boolean
-
-	req.body.cast = req.body.cast.replace(/\s*,\s*/g, ',');
-	
-	if (req.body.cast) req.body.cast = req.body.cast.split(',');  // <- returns an array 
-							
-	Flight.create(req.body, function(err, flightDocumentCreatedInTheDatabase){
-		if(err){
-			console.log(err, ' <- err in the flights create controller')
-			return res.render('flights/new.ejs')
-		}
-
-		console.log(flightDocumentCreatedInTheDatabase, ' <- flight created in db')
-		
-		res.redirect('/flights')
-	})
-}
+function create(req, res) {
+    const flight = new Flight(req.body);
+    flight.save(function(err) {
+        if(err) return res.render("flights/new");
+        console.log(flight);
+        res.redirect("flights/new")
+    });
+};
