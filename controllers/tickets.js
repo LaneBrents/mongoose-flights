@@ -15,5 +15,7 @@ function createTicket(req, res) {
 }
 
 function showTicket(req, res) {
-    res.render('tickets.new', {ticketId: req.params.id});
+    Flight.findById(req.params.id, function(err, flight){
+        res.render('tickets/new', {flight});
+    })
 }
